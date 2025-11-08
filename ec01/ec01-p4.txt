@@ -1,0 +1,3 @@
+Drelimar,Ascalbel,Valnylor,Dorthys,Cyndardith,Brythkryth,Auregaz,Zraalfal,Xendor,Kalagrath,Ulardith,Quarnbel,Wynsyx,Erasiral,Vorngalor,Tarlnarith,Xyrvel,Drethnoris,Karthzal,Ascalkris,Aelther,Dalorath,Krythorath,Eltulth,Tarlmirix,Myrxal,Rylarquor,Mavquin,Arakzar,Balthnor
+
+L26,R48,L11,R29,L36,R39,L31,R23,L47,R6,L28,R30,L14,R18,L14,R39,L28,R36,L40,R41,L5,R38,L5,R5,L5,R33,L5,R31,L5,R16,L5,R6,L5,R35,L5,R9,L5,R48,L5,R12,L13,R17,L11,R29,L43,R14,L11,R47,L38,R33,L38,R18,L11,R47,L24,R44,L43,R17,L25
