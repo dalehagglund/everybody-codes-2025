@@ -1,0 +1,26 @@
+Ignris,Lithralis,Vyrlzor,Glynngonn,Igndaros,Lithris,Aerdaros,Aerdra,Lithdra,Aergonn,Ardenix,Igngonn,Balthix,Balthgonn,Ardenjoris,Norakralis,Vyrldaros,Ardendaros,Vyrldra,Eryralis,Ignralis,Vyrlris,Ignzor,Glynnjoris,Eryris,Glynnzor,Aerkael,Zraaljoris,Norakjoris,Glynndaros,Igndar,Ardenralis,Vyrljoris,Norakkael,Zraaldaros,Ignkael,Lithzor,Vyrlkael,Vyrlix,Zraaldar,Aerix,Erykael,Eryzor,Ignjoris,Zraalkael,Ardendra,Norakgonn,Aerjoris,Glynndra,Vyrldar,Eryix,Balthdra,Glynnkael,Lithix,Erydar,Ignix,Glynnralis,Glynnris,Balthjoris,Zraalralis,Glynndar,Zraalzor,Zraaldra,Lithdar,Norakdaros,Vyrlralis,Lithgonn,Lithdaros,Lithjoris,Balthkael,Balthris,Norakris,Lithkael,Balthdar,Erygonn,Erydra,Aerzor,Norakdra,Glynnix,Balthralis,Vyrlgonn,Norakzor,Norakdar,Igndra,Ardenkael,Zraalgonn,Ardendar,Zraalix,Erydaros,Aerralis,Ardenzor,Ardenris,Ardengonn,Eryjoris,Balthzor,Aerdar,Norakix,Balthdaros,Zraalris,Aerris
+
+e > r,l,n,v
+G > l
+i > s,x,v
+j > o
+I > g
+h > j,k,r,d,z,g,i
+z > o
+Z > r
+t > h
+d > a,r,e
+V > y
+L > i
+k > a,j,k,r,d,z,g,i
+g > o,v
+N > o
+E > r
+l > v,i,j,k,r,d,z,g,t
+a > r,e,l,k,a,v
+o > s,r,n,v
+y > n,v,j,k,r,d,z,g,i
+B > a
+A > e,r
+r > d,o,i,a,l,v,j,k,r,z,g
+n > n,j,k,r,d,z,g,i

@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from collections import defaultdict
 from bisect import bisect_left, bisect_right
 import pytest
-from itertools import pairwise
+from itertools import pairwise, count
 
 def star(f): lambda t: f(*t)
 
@@ -17,7 +17,7 @@ def read_input(fname):
         s = map(lambda item: item.split(" > "), s)
         for char, after in s:
             follows[char] = set(after.split(","))
-    return names.split(","), follows
+    return names.strip().split(","), follows
 
 def part1(input):
     names, follows = input
@@ -33,7 +33,19 @@ def part1(input):
         return "Error: no matching name found"
 
 def part2(input):
-    pass
+    names, follows = input
+
+    print(f"{names = }")
+    total = 0
+    for index, name in zip(count(1), names):
+        if all(
+            ch2 in follows[ch1]
+            for ch1, ch2
+            in pairwise(name)
+        ):
+            print(f"... {index = } {name = }")
+            total += index
+    return total
 
 def prod(items):
     return reduce(lambda x, y: x * y, items, 1)
