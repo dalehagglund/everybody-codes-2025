@@ -72,7 +72,7 @@ def part3(input):
 
     total = 0
     for category in "abc":
-        print(f"cat {category}:")
+        #print(f"cat {category}:")
         for npos in novices[category]:
             left, right = find_interval(
                 mentors[category.upper()],
@@ -84,10 +84,28 @@ def part3(input):
     
     return total
     
+# this turns out to be slower then the above by a factor
+# of about 3 on my part 3 input. it gets the right answer
+# though.
+
+def part3_alternate(input):
+    mindist = 1000
+    input = input * 1000
+    
+    total = 0
+    for pos, ch in enumerate(input):
+        if ch in "ABC": continue
+        left, right = max(pos - mindist, 0), min(pos + mindist, len(input))
+        total += input.count(ch.upper(), left, right + 1)
+        
+    return total
+    
+    
 dispatch = {
     1: part1,
     2: part2,
     3: part3,
+    #3: part3_alternate,
 }
 
 def error(message):
@@ -95,6 +113,8 @@ def error(message):
     exit(1)
 
 def main(argv: list[str]):
+    import time
+    
     parts = []
     while len(argv) > 0 and argv[0].startswith("-"):
         arg = argv.pop(0)
@@ -116,12 +136,18 @@ def main(argv: list[str]):
         error(f"expecting exactly one filename")
     
     if len(parts) == 0:
-        parts = [1, 2, 3]
+        parts = sorted(dispatch.keys())
     parts.sort()
+    
+    def now():
+        return time.perf_counter()
     
     input = read_input(argv[0])
     for part in parts:
-        print(f"part {part} answer = {dispatch[part](input)}")
+        start = now()
+        result = dispatch[part](input)
+        elapsed = now() - start
+        print(f"part {part} answer = {result} {elapsed = :g}")
 
 if __name__ == "__main__":
     main(sys.argv[1:])
