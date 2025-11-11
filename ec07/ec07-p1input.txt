@@ -1,0 +1,17 @@
+Drazonar,Nyonar,Valketh,Nyketh,Drazthyris,Drazketh,Nythyris,Valthyris,Valonar
+
+h > y
+N > y
+l > o,t,k
+D > r
+r > i,b
+n > a
+y > t,r,b
+z > o,t,k
+t > h
+e > t
+i > s
+k > e
+a > b,r,z
+o > n
+V > a
