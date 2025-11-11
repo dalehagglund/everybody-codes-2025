@@ -2,6 +2,7 @@ import sys
 import re
 from functools import partial, reduce
 from dataclasses import dataclass
+from collections import defaultdict
 
 def read_input(fname):
     with open(fname) as f:
@@ -20,8 +21,13 @@ def part1(input):
     return pairs
 
 def part2(input):
-    return None
-    
+    mentors = defaultdict(lambda: 0)
+    pairs = defaultdict(lambda: 0)
+    for ch in input:
+        if ch in "ABC": mentors[ch] += 1
+        else: pairs[ch] += mentors[ch.upper()]
+    return sum(pairs.values())
+
 def prod(items):
     return reduce(lambda x, y: x * y, items, 1)
     
