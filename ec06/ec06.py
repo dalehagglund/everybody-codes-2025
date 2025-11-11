@@ -5,12 +5,19 @@ from dataclasses import dataclass
 
 def read_input(fname):
     with open(fname) as f:
-        input = ...
+        input = f.readlines()[0].strip()
     return input
-    
 
 def part1(input):
-    return None
+    mentors = 0
+    pairs = 0
+    for ch in input:
+        if ch not in "aA": continue
+        if ch == "A":
+            mentors += 1
+        else:
+            pairs += mentors
+    return pairs
 
 def part2(input):
     return None
