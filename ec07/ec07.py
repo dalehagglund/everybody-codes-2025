@@ -51,8 +51,33 @@ def prod(items):
     return reduce(lambda x, y: x * y, items, 1)
     
 def part3(input):
-    pass
+    prefixes, follows = input
 
+    minlen, maxlen = 7, 11
+    
+    def extend(root):
+        if len(root) > maxlen:
+            return
+        if minlen <= len(root) <= maxlen:
+            yield root
+        if root[-1] not in follows:
+            return
+        for ch in follows[root[-1]]:
+            yield from extend(root + ch)
+    
+    names = set()
+    for root in prefixes:
+        if not all(
+            ch2 in follows[ch1]
+            for ch1, ch2
+            in pairwise(root)
+        ):
+            continue
+        for name in extend(root):
+            names.add(name)
+            
+    return len(names)
+        
 dispatch = {
     1: part1,
     2: part2,
