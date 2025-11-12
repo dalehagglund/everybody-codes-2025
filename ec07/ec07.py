@@ -18,16 +18,20 @@ def read_input(fname):
         for char, after in s:
             follows[char] = set(after.split(","))
     return names.strip().split(","), follows
+    
+def is_valid(follows, name):
+    return all(
+        ch2 in follows[ch1]
+        for ch1, ch2
+        in pairwise(name)
+    )
+    
 
 def part1(input):
     names, follows = input
     
     for name in names:
-        if all(
-            ch2 in follows[ch1]
-            for ch1, ch2
-            in pairwise(name)
-        ):
+        if is_valid(follows, name):
             return name
     else:
         return "Error: no matching name found"
@@ -35,15 +39,9 @@ def part1(input):
 def part2(input):
     names, follows = input
 
-    print(f"{names = }")
     total = 0
     for index, name in zip(count(1), names):
-        if all(
-            ch2 in follows[ch1]
-            for ch1, ch2
-            in pairwise(name)
-        ):
-            print(f"... {index = } {name = }")
+        if is_valid(follows, name):
             total += index
     return total
 
@@ -54,28 +52,27 @@ def part3(input):
     prefixes, follows = input
 
     minlen, maxlen = 7, 11
+    targetlen = range(minlen, maxlen + 1)
     
     def extend(root):
         if len(root) > maxlen:
             return
-        if minlen <= len(root) <= maxlen:
+        if len(root) in targetlen:
             yield root
         if root[-1] not in follows:
             return
+
         for ch in follows[root[-1]]:
             yield from extend(root + ch)
     
     names = set()
     for root in prefixes:
-        if not all(
-            ch2 in follows[ch1]
-            for ch1, ch2
-            in pairwise(root)
-        ):
+        if not is_valid(follows, root):
             continue
         for name in extend(root):
             names.add(name)
-            
+            if len(names) % 1000000 == 0:
+                print(f"... so far {len(names)}")
     return len(names)
         
 dispatch = {
