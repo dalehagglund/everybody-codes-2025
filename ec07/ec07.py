@@ -66,13 +66,15 @@ def part3(input):
             yield from extend(root + ch)
     
     names = set()
+    generated = 0
     for root in prefixes:
         if not is_valid(follows, root):
             continue
         for name in extend(root):
+            generated += 1
             names.add(name)
-            if len(names) % 1000000 == 0:
-                print(f"... so far {len(names)}")
+            if generated % 1000000 == 0:
+                print(f"... generated {generated} unique {len(names)}")
     return len(names)
         
 dispatch = {
@@ -84,11 +86,30 @@ dispatch = {
 def error(message):
     print(f"{sys.argv[0]}: {message}", file=sys.stderr)
     exit(1)
+    
+import time
+    
+class perftimer():
+    def __init__(self):
+        self._start = None
+        self._stop = None
+    def __enter__(self):
+        self._start = time.perf_counter()
+        return self
+    def __exit__(self, exctype, excval, exctb):
+        self._stop = time.perf_counter()
+        return False
+    def elapsed(self):
+        if self._start is None:
+            return 0
+        elif self._start is None:
+            return timer.perf_counter() - self._start
+        else:
+            return self._stop - self._start
 
 def main(argv: list[str]):
-    import time
-    
     parts = []
+
     while len(argv) > 0 and argv[0].startswith("-"):
         arg = argv.pop(0)
         if arg == "--": 
@@ -112,15 +133,11 @@ def main(argv: list[str]):
         parts = sorted(dispatch.keys())
     parts.sort()
     
-    def now():
-        return time.perf_counter()
-    
     input = read_input(argv[0])
     for part in parts:
-        start = now()
-        result = dispatch[part](input)
-        elapsed = now() - start
-        print(f"part {part} answer = {result} {elapsed = :g}")
+        with perftimer() as t:
+            result = dispatch[part](input)
+        print(f"part {part} answer = {result} elapsed = {t.elapsed():g}")
 
 if __name__ == "__main__":
     main(sys.argv[1:])
