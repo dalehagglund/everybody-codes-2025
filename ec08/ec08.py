@@ -7,6 +7,7 @@ from bisect import bisect_left, bisect_right
 import pytest
 from itertools import pairwise, count
 from typing import NamedTuple
+import functools
 
 def star(f): lambda t: f(*t)
 
@@ -25,9 +26,61 @@ def part1(input):
         if ((i - 1) + (npins/2)) % npins == (j - 1):
             total += 1
     return total
+    
+@functools.cache
+def intersects(npins, ch1, ch2) -> bool:
+    s1, e1 = ch1
+    s2, e2 = ch2
+    
+    if (s1 + 1) % npins == e1: return False
+    if (s2 + 1) % npins == e2: return False
+    
+    if len({s1, e1, s2, e2}) < 4: return False
+    
+    def pins_between(p1, p2):
+        between = set()
+        p = (p1 + 1) % npins
+        while p != p2:
+            between.add(p)
+            p = (p + 1) % npins
+        return between
+    
+    if {s1, e1} <= pins_between(s2, e2):
+        return False
+    elif {s1, e1} <= pins_between(e2, s2):
+        return False
+    else:
+        return True
+        
+@pytest.mark.parametrize(
+    "npins, chord1, chord2, expected", [
+        (8, (0, 1), (1, 7), False),
+        (8, (0, 4), (4, 1), False),
+        (8, (0, 4), (1, 5), True),
+        
+    ]
+)
+def test_intersects(npins, chord1, chord2, expected):
+    assert intersects(npins, chord1, chord2) == expected
+    assert intersects(npins, chord2, chord1) == expected
 
 def part2(input):
-    return None
+    pins = [p - 1 for p in input]   # makes % easier to use
+    npins = 256     # 8 for sample input
+    prev_chords = []
+    
+    print(f"... {len(pins) = }")
+
+    total = 0
+    for i, chord in enumerate(pairwise(pins)):
+        print(f"... {i}: {chord = }")
+        for prev in prev_chords:
+            # print(f"... ... {prev = }")
+            if intersects(npins, chord, prev):
+                # print(f"... ... intersects!")
+                total += 1
+        prev_chords.append(chord)
+    return total
 
 def prod(items):
     return reduce(lambda x, y: x * y, items, 1)
