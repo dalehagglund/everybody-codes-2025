@@ -1,11 +1,13 @@
 import sys
 import re
 from functools import partial, reduce
+import functools
 from dataclasses import dataclass
-from collections import defaultdict
+from collections import defaultdict, deque
 from bisect import bisect_left, bisect_right
 import pytest
-from itertools import pairwise, count
+from itertools import pairwise, count, groupby
+from typing import NamedTuple
 
 def star(f): lambda t: f(*t)
 
@@ -76,11 +78,57 @@ def part3(input):
             if generated % 1000000 == 0:
                 print(f"... generated {generated} unique {len(names)}")
     return len(names)
+
+def part3_dynprog(input):
+    prefixes, follows = input
+
+    minlen, maxlen = 7, 11
+
+    trace = print
+    trace = lambda *a, **kw: None
+    
+    
+    def find_roots(prefixes):
+        roots = set()
+        for candidate in prefixes:
+            if any(candidate.startswith(r) for r in roots):
+                continue
+            roots.add(candidate)
+        return roots
+
+    @functools.cache
+    def extensions(last, length, depth=2):
+        recur = partial(extensions, depth=depth+1)
+        prefix = ".. " * depth
+        trace(f"{prefix}> ({last}, {length})")
+        
+        total = 0
+        if length == maxlen:
+            trace(f"{prefix}  reached max length")
+            total = 1
+        else:
+            if minlen <= length < maxlen:
+                total += 1
+            successors = follows.get(last, {})
+            trace(f"{prefix}  successors = {''.join(successors)!r}")
+            for ch in successors:
+                total += recur(ch, length + 1)
+        
+        trace(f"{prefix}< ({last}, {length}) = {total}")
+        return total
+    
+    total = 0
+    for root in find_roots(prefixes):
+        if not is_valid(follows, root):
+            continue
+        total += extensions(root[-1], len(root))
+    return total
         
 dispatch = {
     1: part1,
     2: part2,
     3: part3,
+    4: part3_dynprog,
 }
 
 def error(message):
@@ -121,7 +169,7 @@ def main(argv: list[str]):
             ]
             continue
 
-        if re.search("^-[123]$", arg):
+        if re.search(r"""^-\d$""", arg):
             parts.append(int(arg[1]))
         else: 
             error(f"unrecognized argument {arg}")
