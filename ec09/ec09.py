@@ -3,10 +3,10 @@ import re
 from functools import partial, reduce
 import functools
 from dataclasses import dataclass
-from collections import defaultdict, deque
+from collections import defaultdict, deque, Counter
 from bisect import bisect_left, bisect_right
 import pytest
-from itertools import pairwise, count, groupby
+from itertools import pairwise, count, groupby, combinations
 from typing import NamedTuple
 
 def star(f): lambda t: f(*t)
@@ -47,8 +47,76 @@ def part1(input):
         similarity(dna[ch], dna[p1]) * similarity(dna[ch], dna[p2])
     )
 
-def part2(input):
-    return None
+def part2v1(input):
+    dna = [d for _, d in input]
+    
+    def possible_child(d1, d2, d3):
+        return all(
+            a == b or a == c 
+            for a, b, c
+            in zip(d1, d2, d3)
+        )
+        
+    def possible_family(a, b, c):
+            if possible_child(a, b, c): return a, b, c
+            if possible_child(b, a, c): return b, a, c
+            if possible_child(c, a, b): return c, a, b
+            return None
+
+    def similarity(d1, d2):
+        return sum(a == b for a, b in zip(d1, d2))
+    
+    total = 0
+    for loops, triple in enumerate(combinations(range(len(dna)), 3)):
+        if loops % 1000 == 0: print(f"... {loops}")
+        i, j, k = triple
+        di, dj, dk = dna[i], dna[j], dna[k]
+        result = possible_family(di, dj, dk)
+        if result is None:
+            continue
+        ch, p1, p2 = result
+        s = similarity(ch, p1) * similarity(ch, p2)
+        total += s
+        print(f"... possible {i, j, k = } sim = {s}")
+        
+    return total
+        
+
+def part2_v2(input):
+    dna = [d for _, d in input]
+    
+    def possible_child(d1, d2, d3):
+        return all(
+            a == b or a == c 
+            for a, b, c
+            in zip(d1, d2, d3)
+        )
+        
+    def possible_family(a, b, c):
+        return (
+            possible_child(a, b, c)
+            or possible_child(b, a, c)
+            or possible_child(c, a, b)
+        )
+
+    def similarity(d1, d2):
+        return sum(a == b for a, b in zip(d1, d2))
+
+
+    groups = defaultdict(list)
+    for i, d in enumerate(dna):
+        groups[d[2:3]].append(i)
+    print(groups)
+    candidates = []
+    total_combos = 0
+    families = 0
+    for triple in combinations(groups.keys(), 3):
+        if possible_family(*triple):
+            families += 1
+            n = prod(map(lambda g: len(groups[g]), triple))
+            print(f'... {triple} {n}')
+            total_combos += n
+    print(f"{families = } {total_combos = }")
 
 def prod(items):
     return reduce(lambda x, y: x * y, items, 1)
@@ -58,7 +126,7 @@ def part3(input):
         
 dispatch = {
     1: part1,
-    2: part2,
+    2: part2v1,
     3: part3,
 }
 
