@@ -131,12 +131,14 @@ def part3(input):
     dna = [d for _, d in input]
 
     related = defaultdict(set)
+    families = 0
     for loops, triple in enumerate(combinations(range(len(dna)), 3)):
-        if loops % 100000 == 0: print(f"... {loops:-8}")
+        if loops % 250000 == 0: print(f"... {loops:-8} {families = }")
         i, j, k = triple
         if any(a != b and b != c and a != c for a, b, c in zip(dna[i], dna[j], dna[k])):
             continue
-        print(f"...    possible {i, j, k = }")
+        # print(f"...    possible {i, j, k = }")
+        families += 1
         for id1, id2 in product(triple, repeat=2):
             related[id1].add(id2)
     
