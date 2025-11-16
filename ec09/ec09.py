@@ -129,89 +129,27 @@ def prod(items):
     
 def part3(input):
     dna = [d for _, d in input]
-    
-    @dataclass(frozen=True)
-    class Family:
-        parents: frozenset[int]
-        child: int
-        
-        def __init__(self, ch, p1, p2):
-            # `object.__setattr__` to bypass frozen checks
-            object.__setattr__(self, "parents", frozenset({p1, p2}))
-            object.__setattr__(self, "child", ch)
-    
-        def __repr__(self): return str(self)
-        def __str__(self):
-            return f"{set(self.parents)} -> {self.child}"
-    
-    def possible_child(ch, p1, p2):
-        d1, d2, d3 = dna[ch], dna[p1], dna[p2]
-        return all(
-            a == b or a == c 
-            for a, b, c
-            in zip(d1, d2, d3)
-        )
 
-    def possible_family(a, b, c):
-            if possible_child(a, b, c): return a, b, c
-            if possible_child(b, a, c): return b, a, c
-            if possible_child(c, a, b): return c, a, b
-            return None
-
-    def similarity(d1, d2):
-        return sum(a == b for a, b in zip(d1, d2))
-    
-    families = set()
+    related = defaultdict(set)
     for loops, triple in enumerate(combinations(range(len(dna)), 3)):
         if loops % 100000 == 0: print(f"... {loops:-8}")
         i, j, k = triple
-        result = possible_family(i, j, k)
-        if result is None:
+        if any(a != b and b != c and a != c for a, b, c in zip(dna[i], dna[j], dna[k])):
             continue
-        fam = Family(*result)
-        # ch, p1, p2 = result
-        # s = similarity(ch, p1) * similarity(ch, p2)
-        # total += s
-        print(f"...    possible {i, j, k = } {fam = }")
-        families.add(fam)
-    #print(f"{families = }")
-    
-    combined: dict[frozenset[int], set[int]] = defaultdict(set)
-    for f in families:
-        combined[f.parents].add(f.child)
-    
-    print("combined:")
-    for parents, children in combined.items():
-        print(f"... {set(parents)} - > {children}")
-    
-    # confirm each id
-    # - shows up as a child at most once
-    # - shows up as a parent at most once
-
-    for i in range(len(dna)):
-        assert sum(i in children for children in combined.values()) <= 1
-
-    # for i in range(len(dna)):
-        # assert sum(i in parents for parents in combined.keys()) <= 1
-        
-    # i'm pretty sure that related can be directly  oomputed
-    # from the families as they're discovered.
-
-    related: dict[int, set[int]] = defaultdict(set)
-    for parents, children in combined.items():
-        for id1, id2 in product(parents | children, repeat=2):
+        print(f"...    possible {i, j, k = }")
+        for id1, id2 in product(triple, repeat=2):
             related[id1].add(id2)
-
-    print("related:")
-    for id in range(len(dna)):
-        if id not in related: continue
-        print(f"... {id:3d} - > {', '.join(str(f) for f in sorted(related[id]))}")
+    
+    # print("related:")
+    # for id in range(len(dna)):
+        # if id not in related: continue
+        # print(f"... {id:3d} - > {', '.join(str(f) for f in sorted(related[id]))}")
         
     def bfs(start) -> Iterator[int]:
         q = deque()
         visited: set[int] = set()
         
-        print(f"... bfs({start})")
+        # print(f"... bfs({start})")
         push = q.append
         pop = q.popleft
         push(start)
@@ -233,11 +171,12 @@ def part3(input):
         components.add(cc)
         nodes -= cc
     
-    print("components:")
-    for cc in components:
-        print(f"... {set(cc)}")
+    # print("components:")
+    # for cc in components:
+        # print(f"... {set(cc)}")
 
     return sum(i+1 for i in max(components, key=len))
+
 dispatch = {
     1: part1,
     2: part2v1,
